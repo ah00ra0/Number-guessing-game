@@ -1,16 +1,24 @@
 import random
 import os
 import time
-import keyboard  # برای کنترل ترکیب کلیدها
+import threading
+import keyboard
 from colorama import init, Fore, Style
 
 init(autoreset=True)
 
 bar_length = 10
-progress = 5  # شروع از وسط
+progress = 5  # نوار وسط شروع می‌شود
 number_to_guess = random.randint(1, 10)
-money = 10  # شروع با 10 پول
-help_used = 0  # تعداد کمک‌هایی که استفاده شده
+money = 10  # پول اولیه
+help_used = 0
+user_guess = None  # برای ذخیره‌ی آخرین حدس
+
+# قفل برای جلوگیری از تداخل در threadها
+lock = threading.Lock()
+
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def draw_bar(progress, last_result=None):
     bar = ''
@@ -26,20 +34,32 @@ def draw_bar(progress, last_result=None):
             bar += Fore.WHITE + '░'
     print(f"[{bar}]" + Style.RESET_ALL)
 
-def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
-
 def give_hint():
-    global money
-    if money > 0:
-        money -= 1  # کم کردن یک پول برای استفاده از کمک
+    global money, help_used
+    if money > 0 and user_guess is not None:
+        money -= 1
+        help_used += 1
         hint = "larger" if number_to_guess > user_guess else "smaller"
-        print(f"\nHint: The number is {hint} than your guess.")
+        print(Fore.YELLOW + f"\nHint: The number is {hint} than your guess.")
+    elif money <= 0:
+        print(Fore.RED + "\nYou don't have enough money to get a hint.")
     else:
-        print("\nYou don't have enough money for a hint!")
+        print(Fore.CYAN + "\nMake a guess first to get a hint.")
+
+def listen_for_hint():
+    # این تابع در background اجرا می‌شود
+    while True:
+        if keyboard.is_pressed("ctrl+y"):
+            with lock:
+                give_hint()
+                time.sleep(1)  # تا از تکرار ناخواسته جلوگیری بشه
 
 def play():
-    global progress, number_to_guess, money, help_used
+    global progress, number_to_guess, money, help_used, user_guess
+
+    # شروع لیسنر برای کلیدها
+    threading.Thread(target=listen_for_hint, daemon=True).start()
+
     while True:
         clear()
         print(f"Number Guessing Game (1 to 10) | Money: {money} | Helps used: {help_used}")
@@ -53,7 +73,7 @@ def play():
             break
 
         try:
-            user_guess = int(input("Enter your guess: "))
+            user_guess = int(input("Enter your guess (or 99 to quit): "))
             if user_guess == 99:
                 print("Exiting...")
                 break
@@ -62,21 +82,15 @@ def play():
                 print(Fore.GREEN + "Correct!")
                 progress += 1
                 draw_bar(progress, 'correct')
-                number_to_guess = random.randint(1, 10)  # تغییر عدد پس از حدس درست
+                number_to_guess = random.randint(1, 10)  # فقط بعد از درست حدس زدن، عدد عوض میشه
             else:
-                print(Fore.RED + f"Wrong! The number was {number_to_guess}")
+                print(Fore.RED + "Wrong guess!")
                 progress -= 1
                 draw_bar(progress, 'wrong')
 
-                # درخواست کمک اگر حدس غلط بود
-                print("Press Ctrl+Y for a hint.")
-                if keyboard.is_pressed('ctrl+y'):  # اگر کلید Ctrl + Y فشرده شد
-                    give_hint()
-                    help_used += 1  # شمارش کمک‌های استفاده‌شده
-
             time.sleep(1.5)
         except ValueError:
-            print("Please enter a valid number!")
+            print("Please enter a valid number.")
             time.sleep(1)
 
 if __name__ == "__main__":
