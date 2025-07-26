@@ -7,22 +7,66 @@ from colorama import init, Fore, Style
 
 init(autoreset=True)
 
-# تنظیمات نوار
+# تنظیمات بازی
 bar_length = 10
 progress = 5
 number_to_guess = random.randint(1, 10)
 money = 10
 help_used = 0
 user_guess = None
-
 lock = threading.Lock()
 
+# منو
+menu_items = ["Start", "Store", "About Us", "Exit"]
+selected_index = 0
+
 def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
 
 def center_text(text, width=80):
     spaces = (width - len(text)) // 2
     return ' ' * spaces + text
+
+def draw_menu(selected):
+    clear()
+    print("\n" * 5)
+    for i, item in enumerate(menu_items):
+        if i == selected:
+            color = Fore.GREEN if item == "Start" else (Fore.RED if item == "Exit" else Fore.CYAN)
+            print(center_text(color + f"[::::: {item} :::::]" + Style.RESET_ALL))
+        else:
+            print(center_text(f"[::::: {item} :::::]"))
+
+def menu():
+    global selected_index
+    draw_menu(selected_index)
+    while True:
+        if keyboard.is_pressed("up"):
+            selected_index = (selected_index - 1) % len(menu_items)
+            draw_menu(selected_index)
+            time.sleep(0.15)
+        elif keyboard.is_pressed("down"):
+            selected_index = (selected_index + 1) % len(menu_items)
+            draw_menu(selected_index)
+            time.sleep(0.15)
+        elif keyboard.is_pressed("enter"):
+            option = menu_items[selected_index]
+            if option == "Start":
+                return "start"
+            elif option == "Exit":
+                print(Fore.RED + "\nExiting game...")
+                time.sleep(1)
+                exit()
+            elif option == "Store":
+                clear()
+                print(Fore.MAGENTA + "\n🛒 Store is under construction!")
+                input("\nPress Enter to return to menu...")
+                draw_menu(selected_index)
+            elif option == "About Us":
+                clear()
+                print(Fore.YELLOW + "\n👨‍💻 This game was made with Python and love!")
+                input("\nPress Enter to return to menu...")
+                draw_menu(selected_index)
 
 def draw_bar(progress, last_result=None):
     bar = ''
@@ -57,20 +101,9 @@ def listen_for_hint():
                 give_hint()
                 time.sleep(1)
 
-def show_menu():
-    clear()
-    print("\n" * 5)
-    print(center_text("[::::::start::::::]"))
-    print(center_text("Press Enter to start..."))
-    while True:
-        if keyboard.is_pressed("enter"):
-            time.sleep(0.5)
-            break
-
 def play():
     global progress, number_to_guess, money, help_used, user_guess
 
-    # مقداردهی دوباره برای شروع جدید
     progress = 5
     number_to_guess = random.randint(1, 10)
     money = 10
@@ -87,9 +120,11 @@ def play():
 
         if progress >= bar_length:
             print(Fore.GREEN + "\n🎉 You Win! Well done!")
+            input("\nPress Enter to return to menu...")
             break
         elif progress <= 0:
             print(Fore.RED + "\n💥 Game Over! You lost.")
+            input("\nPress Enter to return to menu...")
             break
 
         try:
@@ -113,7 +148,9 @@ def play():
             print("⛔ Please enter a valid number.")
             time.sleep(1)
 
+# برنامه اصلی
 if __name__ == "__main__":
     while True:
-        show_menu()
-        play()
+        action = menu()
+        if action == "start":
+            play()
