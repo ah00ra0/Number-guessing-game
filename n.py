@@ -7,7 +7,6 @@ from colorama import init, Fore, Style
 
 init(autoreset=True)
 
-# تنظیمات بازی
 bar_length = 10
 progress = 5
 number_to_guess = random.randint(1, 10)
@@ -16,7 +15,6 @@ help_used = 0
 user_guess = None
 lock = threading.Lock()
 
-# منو
 menu_items = ["Start", "Store", "About Us", "Exit"]
 selected_index = 0
 
@@ -52,7 +50,10 @@ def menu():
         elif keyboard.is_pressed("enter"):
             option = menu_items[selected_index]
             if option == "Start":
-                return "start"
+                difficulty = difficulty_menu()
+                if difficulty:
+                    play(difficulty)
+                draw_menu(selected_index)
             elif option == "Exit":
                 print(Fore.RED + "\nExiting game...")
                 time.sleep(1)
@@ -101,11 +102,35 @@ def listen_for_hint():
                 give_hint()
                 time.sleep(1)
 
-def play():
+def difficulty_menu():
+    options = ["easy"]
+    selected = 0
+    while True:
+        clear()
+        print("\n" * 5)
+        for i, item in enumerate(options):
+            if i == selected:
+                print(center_text(Fore.GREEN + f"[::::: {item} :::::]" + Style.RESET_ALL))
+            else:
+                print(center_text(f"[::::: {item} :::::]"))
+        if keyboard.is_pressed("up") or keyboard.is_pressed("down"):
+            # چون فقط یه گزینه هست، هیچ کاری نمیکنه ولی برای توسعه آماده است
+            time.sleep(0.15)
+        elif keyboard.is_pressed("enter"):
+            return options[selected]
+        time.sleep(0.1)
+
+def play(difficulty):
     global progress, number_to_guess, money, help_used, user_guess
 
+    # بسته به سختی عدد حد بالا تغییر کنه (فعلاً فقط easy هست)
+    if difficulty == "easy":
+        max_number = 10
+    else:
+        max_number = 10
+
     progress = 5
-    number_to_guess = random.randint(1, 10)
+    number_to_guess = random.randint(1, max_number)
     money = 10
     help_used = 0
     user_guess = None
@@ -114,7 +139,7 @@ def play():
 
     while True:
         clear()
-        print(f"🎮 Number Guessing Game (1 to 10)")
+        print(f"🎮 Number Guessing Game ({difficulty.title()}) - Guess number between 1 and {max_number}")
         print(f"💰 Money: {money} | 💡 Helps used: {help_used}")
         draw_bar(progress)
 
@@ -138,7 +163,7 @@ def play():
                 print(Fore.GREEN + "✅ Correct!")
                 progress += 1
                 draw_bar(progress, 'correct')
-                number_to_guess = random.randint(1, 10)
+                number_to_guess = random.randint(1, max_number)
             else:
                 print(Fore.RED + "❌ Wrong guess!")
                 progress -= 1
@@ -149,9 +174,9 @@ def play():
             print("⛔ Please enter a valid number.")
             time.sleep(1)
 
-# برنامه اصلی
 if __name__ == "__main__":
     while True:
         action = menu()
         if action == "start":
-            play()
+            # play() را با سختی فراخوانی می‌کنیم
+            pass
