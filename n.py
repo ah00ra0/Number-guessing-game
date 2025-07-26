@@ -5,22 +5,24 @@ import threading
 import keyboard
 from colorama import init, Fore, Style
 
-# آماده‌سازی رنگ‌ها
 init(autoreset=True)
 
-# تنظیمات اولیه
+# تنظیمات نوار
 bar_length = 10
-progress = 5  # نوار از وسط شروع میشه
+progress = 5
 number_to_guess = random.randint(1, 10)
-money = 10  # پول اولیه
+money = 10
 help_used = 0
-user_guess = None  # آخرین عدد وارد شده توسط کاربر
+user_guess = None
 
-# قفل برای thread ایمن
 lock = threading.Lock()
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
+
+def center_text(text, width=80):
+    spaces = (width - len(text)) // 2
+    return ' ' * spaces + text
 
 def draw_bar(progress, last_result=None):
     bar = ''
@@ -49,17 +51,32 @@ def give_hint():
         print(Fore.CYAN + "\nMake a guess first to get a hint.")
 
 def listen_for_hint():
-    # این thread جداگانه کلیدها رو مانیتور می‌کنه
     while True:
         if keyboard.is_pressed("ctrl+y"):
             with lock:
                 give_hint()
-                time.sleep(1)  # جلوگیری از چند بار اجرا پشت سر هم
+                time.sleep(1)
+
+def show_menu():
+    clear()
+    print("\n" * 5)
+    print(center_text("[::::::start::::::]"))
+    print(center_text("Press Enter to start..."))
+    while True:
+        if keyboard.is_pressed("enter"):
+            time.sleep(0.5)
+            break
 
 def play():
     global progress, number_to_guess, money, help_used, user_guess
 
-    # شروع مانیتورینگ کلیدهای ترکیبی
+    # مقداردهی دوباره برای شروع جدید
+    progress = 5
+    number_to_guess = random.randint(1, 10)
+    money = 10
+    help_used = 0
+    user_guess = None
+
     threading.Thread(target=listen_for_hint, daemon=True).start()
 
     while True:
@@ -79,13 +96,13 @@ def play():
             user_guess = int(input("🔢 Enter your guess (or 99 to quit): "))
             if user_guess == 99:
                 print("Exiting...")
-                break
+                exit()
 
             if user_guess == number_to_guess:
                 print(Fore.GREEN + "✅ Correct!")
                 progress += 1
                 draw_bar(progress, 'correct')
-                number_to_guess = random.randint(1, 10)  # فقط بعد از درست بودن، عدد جدید تولید میشه
+                number_to_guess = random.randint(1, 10)
             else:
                 print(Fore.RED + "❌ Wrong guess!")
                 progress -= 1
@@ -97,4 +114,6 @@ def play():
             time.sleep(1)
 
 if __name__ == "__main__":
-    play()
+    while True:
+        show_menu()
+        play()
