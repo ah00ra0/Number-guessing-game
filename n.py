@@ -1,6 +1,7 @@
 import random
 import os
 import time
+import keyboard  # برای کنترل ترکیب کلیدها
 from colorama import init, Fore, Style
 
 init(autoreset=True)
@@ -8,6 +9,8 @@ init(autoreset=True)
 bar_length = 10
 progress = 5  # شروع از وسط
 number_to_guess = random.randint(1, 10)
+money = 10  # شروع با 10 پول
+help_used = 0  # تعداد کمک‌هایی که استفاده شده
 
 def draw_bar(progress, last_result=None):
     bar = ''
@@ -26,11 +29,20 @@ def draw_bar(progress, last_result=None):
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
+def give_hint():
+    global money
+    if money > 0:
+        money -= 1  # کم کردن یک پول برای استفاده از کمک
+        hint = "larger" if number_to_guess > user_guess else "smaller"
+        print(f"\nHint: The number is {hint} than your guess.")
+    else:
+        print("\nYou don't have enough money for a hint!")
+
 def play():
-    global progress, number_to_guess
+    global progress, number_to_guess, money, help_used
     while True:
         clear()
-        print("Number Guessing Game (1 to 10)")
+        print(f"Number Guessing Game (1 to 10) | Money: {money} | Helps used: {help_used}")
         draw_bar(progress)
 
         if progress >= bar_length:
@@ -41,19 +53,27 @@ def play():
             break
 
         try:
-            guess = int(input("Enter your guess: "))
-            if guess == 99:
+            user_guess = int(input("Enter your guess: "))
+            if user_guess == 99:
                 print("Exiting...")
                 break
-            if guess == number_to_guess:
+
+            if user_guess == number_to_guess:
                 print(Fore.GREEN + "Correct!")
                 progress += 1
                 draw_bar(progress, 'correct')
+                number_to_guess = random.randint(1, 10)  # تغییر عدد پس از حدس درست
             else:
                 print(Fore.RED + f"Wrong! The number was {number_to_guess}")
                 progress -= 1
                 draw_bar(progress, 'wrong')
-            number_to_guess = random.randint(1, 10)
+
+                # درخواست کمک اگر حدس غلط بود
+                print("Press Ctrl+Y for a hint.")
+                if keyboard.is_pressed('ctrl+y'):  # اگر کلید Ctrl + Y فشرده شد
+                    give_hint()
+                    help_used += 1  # شمارش کمک‌های استفاده‌شده
+
             time.sleep(1.5)
         except ValueError:
             print("Please enter a valid number!")
