@@ -121,17 +121,18 @@ def play():
         if progress >= bar_length:
             print(Fore.GREEN + "\n🎉 You Win! Well done!")
             input("\nPress Enter to return to menu...")
-            break
+            return
         elif progress <= 0:
             print(Fore.RED + "\n💥 Game Over! You lost.")
             input("\nPress Enter to return to menu...")
-            break
+            return
 
         try:
-            user_guess = int(input("🔢 Enter your guess (or 99 to quit): "))
+            user_guess = int(input("🔢 Enter your guess (or 99 to return to menu): "))
             if user_guess == 99:
-                print("Exiting...")
-                exit()
+                print(Fore.CYAN + "🔁 Returning to main menu...")
+                time.sleep(1)
+                return
 
             if user_guess == number_to_guess:
                 print(Fore.GREEN + "✅ Correct!")
