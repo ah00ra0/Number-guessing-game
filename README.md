@@ -1,5 +1,74 @@
 # Number-guessing-game
 A number guessing game written in Python
+# 🧩🎯 Terminal Number Guessing Game 🎯🧩
+
+A fun and interactive terminal-based number guessing game with a colorful menu, keyboard navigation, and progress bar. Built entirely in Python 🐍 with love ❤️.
+
+---
+
+## 🧠 Game Idea
+Your goal is simple: 🎯 Guess the hidden number!  
+If you're correct, you move forward. If not, you fall back.  
+Reach the end of the progress bar = Victory 🏆  
+Reach the beginning = Game Over ❌
+
+---
+
+## 🚀 How to Run
+
+### 📦 Requirements
+- Python 3.8 or higher
+- Install dependencies:
+
+```bash
+pip install keyboard colorama
+```
+
+### ▶️ Running the Game:
+
+```bash
+python n.py
+```
+
+---
+
+## 🎮 Controls
+
+🔼 🔽 Arrow Keys: Navigate menu  
+⏹️ Space: Select option  
+During the game:
+- Type a number and press Enter to guess
+- Enter `99` to return to the main menu
+- Press `Ctrl + Y` to get a hint 💡
+
+---
+
+## 🛠 Features
+
+✨ Colorful terminal interface with keyboard controls  
+🎚 Four difficulty levels:
+- 🟢 `easy`: Only 0 or 1
+- 🔵 `normal`: Guess between 0 to 10
+- 🔴 `hard`: Longer progress bar
+- 🟣 `mod`: Infinite money (cheat mode)
+
+📊 Dynamic progress bar with color indicators  
+💰 Hint system (deducts money, unless in cheat mode)  
+🔄 Modular and extensible design
+
+---
+
+## 👨‍💻 About Us
+
+email :wahooraw@gmail.com
+
+---
+
+## 📌 Future Plans
+
+- 🛒 Fully functional Store with items like "Hint Booster"
+- 🏅 Score saving and high score tracking
+- 🖼 GUI version using `tkinter` or `customtkinter`
 
 # 🧩🎯 Terminal Number Guessing Game 🎯🧩
 
@@ -25,7 +94,7 @@ pip install keyboard colorama
 ### ▶️ اجرای بازی:
 
 ```bash
-python game.py
+python n.py
 ```
 
 ---
@@ -58,8 +127,7 @@ python game.py
 
 ## 👨‍💻 درباره ما
 
-این بازی با عشق ❤️ و پایتون 🐍 ساخته شده است.  
-اگر دوستش داشتید، لطفاً ⭐️ بدهید یا مشارکت کنید!
+email : wahooraw@gmail.com
 
 ---
 
@@ -68,4 +136,3 @@ python game.py
 - 🛒 ساخت کامل بخش Store با آیتم‌های تقویتی
 - 🏅 ذخیره رکورد و امتیاز
 - 🖼 طراحی نسخه گرافیکی با `tkinter` یا `customtkinter`
-
