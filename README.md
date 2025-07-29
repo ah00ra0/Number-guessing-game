@@ -2,7 +2,7 @@
 
 A fun and interactive terminal-based number guessing game with a colorful menu, keyboard navigation, and progress bar. Built entirely in Python 🐍 with love ❤️.
 <br>
-<img src="img/1.png" />
+<img src="img/2.png" />
 
 ---
 
@@ -73,6 +73,8 @@ email :wahooraw@gmail.com
 # 🧩🎯 Terminal Number Guessing Game 🎯🧩
 
 یک بازی هیجان‌انگیز حدس عدد در محیط ترمینال با منوی رنگی و رابط کاربری کاربرپسند. این بازی با زبان 🐍 Python نوشته شده و از ویژگی‌هایی مثل نوار پیشرفت، سطح سختی مختلف، و سیستم راهنمایی برخوردار است.
+<br>
+<img src="img/1.png" />
 
 ---
 
