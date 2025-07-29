@@ -1,7 +1,7 @@
 # 🧩🎯 Terminal Number Guessing Game 🎯🧩
 
 A fun and interactive terminal-based number guessing game with a colorful menu, keyboard navigation, and progress bar. Built entirely in Python 🐍 with love ❤️.
-
+![Game](img/capture.PNG)
 ---
 
 ## 🧠 Game Idea
